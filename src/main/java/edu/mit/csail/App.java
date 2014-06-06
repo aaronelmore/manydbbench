@@ -44,7 +44,8 @@ public class App
 			this.msInterval = msInterval;
 			this.dbName = dbName;
 			this.rng = new Random();
-			this.watch = new Log4JStopWatch(dbName);
+			this.watch = new Log4JStopWatch(dbName,Logger.getLogger("instrument.org.perf4j.TimingLogger"));
+			
 		}
 		
 		public void stop(){
@@ -57,8 +58,10 @@ public class App
 		
 		@Override
 		public void run() {
+			log.debug(String.format("(%s) Starting db thread", dbName));
 			if (isOn){
 				//Open Connection
+				log.debug("Opening connection");
 			}
 			try {
 				while (cont){
@@ -66,18 +69,18 @@ public class App
 					double coin = rng.nextDouble();
 					if(isOn && coin < offChance){
 						isOn = !isOn;
-						log.info(dbName +" is now off");
+						log.debug(dbName +" is now off");
 						//TODO close conn
 					}
 					else if(!isOn && coin < onChance){
 						isOn = !isOn;
-						log.info(dbName +" is now on");
+						log.debug(dbName +" is now on");
 						//TODO open conn
 					}
 					
 					if (isOn){
 						//if on issue read
-						log.info(dbName +"  should read");
+						log.debug(dbName +"  should read");
 						//TODO read and record stat
 						watch.start();
 						
@@ -86,7 +89,7 @@ public class App
 					//time
 					Thread.sleep(this.msInterval);
 				}
-				log.info("Stopped");
+				log.info(String.format("(%s) Done",dbName));
 				//save stat
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -102,7 +105,7 @@ public class App
 		List<WorkerThread> workers = new ArrayList<>();
 		List<Thread> threads = new ArrayList<>();
 		for( int i = 0; i < n; i++){
-			WorkerThread w = new WorkerThread(0.02, 0.98, false, 1000, "DB");
+			WorkerThread w = new WorkerThread(0.02, 0.98, false, 1000, String.format("testdb%s", i));
 			Thread t = new Thread(w);
 			t.setDaemon(true);
 			workers.add(w);
