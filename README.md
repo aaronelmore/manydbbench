@@ -14,7 +14,7 @@ PostgreSQL
 
 Prepare Eclipse (may need eclipse restart)
 ----------------
-mvn -Declipse.workspace=[path to workspace] eclipse:add-maven-repo
+mvn -Declipse.workspace=[path to workspace] eclipse:add-maven-repo <br>
 mvn eclipse:eclipse 
 
 download dependencies
