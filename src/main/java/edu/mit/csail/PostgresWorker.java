@@ -11,7 +11,7 @@ public class PostgresWorker extends WorkerThreadBase {
 
 	static Logger log = Logger.getLogger(PostgresWorker.class.getSimpleName());
 	private String connString;
-	private static String READSQL = "select * from usertable where id=?";
+	private static String READSQL = "select * from usertable where YCSB_KEY=?";
 	private PreparedStatement readst;
 	private ResultSet rs = null;
 	
@@ -58,7 +58,7 @@ public class PostgresWorker extends WorkerThreadBase {
 
 	@Override
 	public void doWork() throws Exception {
-		log.info("doWorkSon");
+		log.debug(String.format("(%s) doWork",dbName));
 		if (readst == null){
 			stopWithFailure("Unexpected null prepared statement");
 			return;
