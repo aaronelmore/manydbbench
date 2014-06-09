@@ -178,6 +178,12 @@ def dropAllDbs():
     cmd = "psql -U %s  postgres -w -c \"%s\"" % ("dbv", creator)
     localCmdOutput(cmd)
     
+
+def genInsert(key):
+    insert = "INSERT into USERTABLE values (%s," % key
+    vals = ["'%s'" % genRandomName('%s',99)  for x in range(10)]
+    insert = "%s %s)" % (insert, ','.join(vals))
+    return insert
     
 def createDbs(db_nanmes):
     logger.info("num %s"% args.num)
@@ -188,6 +194,8 @@ def createDbs(db_nanmes):
         cmd = "psql -U %s  postgres -w -c \"%s\"" % ("dbv", create)
         localCmdOutput(cmd)
         cmd = "psql -U %s  %s -w -c \"%s\"" % ("dbv", db, CREATE_TABLE)
+        localCmdOutput(cmd)
+        cmd = "psql -U %s  %s -w -c \"%s\"" % ("dbv", db, genInsert(1))
         localCmdOutput(cmd)
           
 if __name__ == "__main__":
