@@ -49,6 +49,7 @@ public abstract class WorkerThreadBase implements Runnable {
 	public abstract void doWork() throws Exception;
 	
 	public void stopWithFailure(String failure) {
+		log.error(String.format("(%s) Thread stopping with failure: %s", dbName, failure));
 		cont = false;
 	}
 	
@@ -61,6 +62,7 @@ public abstract class WorkerThreadBase implements Runnable {
 			if (isOn){
 				//Open Connection
 				log.debug("Opening connection");
+				openCon();
 			}
 
 			while (cont){

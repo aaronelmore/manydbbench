@@ -36,7 +36,6 @@ public class PostgresWorker extends WorkerThreadBase {
 					 user,
 					 password);
 			readst = conn.prepareStatement(READSQL);
-			readst.setInt(1, 1);
 		} catch (SQLException e) {
 			log.error("Error Openning Connection");
 			stopWithFailure(e.getMessage());
@@ -46,16 +45,26 @@ public class PostgresWorker extends WorkerThreadBase {
 	@Override
 	public void closeCon() {
 		try{
-			conn.close();
+			if (conn != null) {
+				conn.close();
+			}
 		} catch (SQLException e) {
 			log.error("Error closing Connection");
 			stopWithFailure(e.getMessage());
+		} finally {
+			conn = null;
 		}
 	}
 
 	@Override
 	public void doWork() throws Exception {
 		log.info("doWorkSon");
+		if (readst == null){
+			stopWithFailure("Unexpected null prepared statement");
+			return;
+		}
+		readst.clearParameters();
+		readst.setInt(1, 1);
 		rs = readst.executeQuery();
 		while(rs.next()){
 			rs.getString(1);
