@@ -36,6 +36,7 @@ public class ManyBench
 		double offChance;
 		int interval;
 		String dbNameBase;
+		int startAt;
 		
 		public Config(CommandLine cmd){
 			numDbs = Integer.parseInt(cmd.getOptionValue("n"));
@@ -50,6 +51,8 @@ public class ManyBench
 				offChance/=100;
 			}
 			interval = Integer.parseInt(cmd.getOptionValue("interval","1000"));
+			startAt = Integer.parseInt(cmd.getOptionValue("startAt","0"));
+			
 			dbNameBase = cmd.getOptionValue("dbName", "testdb") + "%s";
 		}
 
@@ -72,7 +75,7 @@ public class ManyBench
 		boolean on=true;
 		for( int i = 0; i < config.numDbs; i++){
 			WorkerThreadBase w = WorkerFactory.makeWorker(config.db, config.onChance, config.offChance, 
-					on, config.interval, String.format(config.dbNameBase, i));
+					on, config.interval, String.format(config.dbNameBase, (i+config.startAt)));
 			Thread t = new Thread(w);
 			t.setDaemon(true);
 			workers.add(w);
@@ -95,6 +98,7 @@ public class ManyBench
     {
     	Options options = new Options();
     	options.addOption("n", true, "Number of databases");
+    	options.addOption("s", true, "DB Number to start with");
     	options.addOption("t", true, "How long to run");
     	options.addOption("db", true, "DatabaseType");
     	options.addOption("dbName", true, "DatabaseNameBase");
