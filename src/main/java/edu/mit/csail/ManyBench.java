@@ -37,6 +37,7 @@ public class ManyBench
 		int interval;
 		String dbNameBase;
 		int startAt;
+		int startOn;
 		
 		public Config(CommandLine cmd){
 			numDbs = Integer.parseInt(cmd.getOptionValue("n"));
@@ -52,7 +53,8 @@ public class ManyBench
 			}
 			interval = Integer.parseInt(cmd.getOptionValue("interval","1000"));
 			startAt = Integer.parseInt(cmd.getOptionValue("startAt","0"));
-			
+			startOn = Integer.parseInt(cmd.getOptionValue("startOn","1"));
+
 			dbNameBase = cmd.getOptionValue("dbName", "testdb") + "%s";
 		}
 
@@ -73,10 +75,17 @@ public class ManyBench
 		List<WorkerThreadBase> workers = new ArrayList<>();
 		List<Thread> threads = new ArrayList<>();
 		boolean on=true;
+		int started = 0;
 		for( int i = 0; i < config.numDbs; i++){
 			WorkerThreadBase w = WorkerFactory.makeWorker(config.db, config.onChance, config.offChance, 
 					on, config.interval, String.format(config.dbNameBase, (i+config.startAt)));
 			Thread t = new Thread(w);
+			if (on){
+				started++;
+				if (started >= config.startOn){
+					on = false;
+				}
+			}
 			t.setDaemon(true);
 			workers.add(w);
 			t.start();
@@ -105,6 +114,7 @@ public class ManyBench
     	options.addOption("on", true, "On Chance");
     	options.addOption("off", true, "Off Chance");
     	options.addOption("interval", true, "Worker Interval (ms)");
+    	options.addOption("startOn", true, "How many DBS to start with on");
     	
     	CommandLineParser parser = new GnuParser();
     	CommandLine cmd = parser.parse( options, args);
