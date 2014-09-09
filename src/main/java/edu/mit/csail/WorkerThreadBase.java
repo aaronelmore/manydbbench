@@ -36,7 +36,7 @@ public abstract class WorkerThreadBase implements Runnable {
 		this.watch = new Log4JStopWatch(dbName,Logger.getLogger("instrument.org.perf4j.TimingLogger"));
 		this.host = "localhost";
 		this.user = "dbv";
-		this.password = "XXX";
+		this.password = "dbv";
 	}
 	
 	public void stop(){

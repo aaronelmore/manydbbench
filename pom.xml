@@ -34,6 +34,17 @@
 		<artifactId>perf4j</artifactId>
 		<version>0.9.16</version>
 	</dependency>
+	<dependency>
+		<groupId>com.rabbitmq</groupId>
+		<artifactId>amqp-client</artifactId>
+		<version>3.3.4</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-lang</groupId>
+		<artifactId>commons-lang</artifactId>
+		<version>2.3</version>
+	</dependency>
+	
     
   </dependencies>
 	<build>
